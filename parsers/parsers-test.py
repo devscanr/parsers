@@ -1,7 +1,8 @@
 # from src.parser import test
 from parsers.parsers import parse_phones, parse_emails
 
-# All emails and numbers are fake. All possible matches will real people and phones are coincidental and not intended.
+# Emails and phone numbers are fake (generated). Potential clashes will existing contacts
+# of real people are coincidental and not intended.
 
 def describe_parse_phones() -> None:
     def parses_international() -> None:
