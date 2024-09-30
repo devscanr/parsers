@@ -1,0 +1,12 @@
+# Common
+.DS_Store
+.git/
+.idea/
+.venv/
+.mypy_cache/
+.pytest_cache/
+__pycache__/
+dist/
+
+# Project
+ignore/
