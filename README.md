@@ -4,9 +4,10 @@ Parse phones, email, etc. from human texts (imprecisely formatted).
 
 ### Phone number recognition
 
-- International format (e.g `+49 30 12345678`)
+- International format (e.g `+49 30 xxxxxxxx`)
 - Preceded by certain words (e.g. `Phone: xxx`)
 - Have unicode prefixes (e.g. `📞 xxx`)
+- From URLs (e.g. `t.me/xxxxxxxx`)
 
 ## Existing Libraries
 

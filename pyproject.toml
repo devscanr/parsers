@@ -10,7 +10,7 @@ ignore = ["E701", "E741"]
 [tool.poetry]
 package-mode = true
 name = "parsers"
-version = "0.1.1"
+version = "0.1.2"
 description = ""
 authors = ["DevScanr team <info@devscanr.com>"]
 readme = "README.md"
@@ -29,6 +29,7 @@ ruff = "^0.6.3"
 PYTHONPATH = "."
 
 [tool.poe.tasks]
+build = "poetry build --format=wheel"
 typecheck = "poetry run mypy --enable-incomplete-feature=NewGenericSyntax ."
 test = "poetry run pytest --disable-warnings"
 lint = "poetry run ruff check"
