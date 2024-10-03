@@ -22,6 +22,7 @@ def uniq[T](arr: list[T] | Generator[str, Any, Any]) -> list[T]: # type: ignore
     for x in arr:
         d[x] = 1
     return list(d.keys())
+# TODO list __all__
 
 def clean_text(text: str) -> str:
     text = text.replace("：", ": ").strip()

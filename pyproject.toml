@@ -1,5 +1,5 @@
 [tool.mypy]
-python_version = "3.12"
+python_version = "^3.12"
 strict = true
 disallow_untyped_calls = false
 no_implicit_reexport = false
@@ -10,7 +10,7 @@ ignore = ["E701", "E741"]
 [tool.poetry]
 package-mode = true
 name = "parsers"
-version = "0.1.2"
+version = "0.2.0"
 description = ""
 authors = ["DevScanr team <info@devscanr.com>"]
 readme = "README.md"
@@ -19,6 +19,9 @@ readme = "README.md"
 python = "^3.12"
 pydantic-settings = "^2.4.0"
 pytest-describe = "^2.2.0"
+html2text = "^2024.2.26"
+emoji = "^2.13.2"
+markdown = "^3.7"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.11.2"
