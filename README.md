@@ -1,12 +1,13 @@
-## Parsers
+## Extractors
 
-Parse phones, email, etc. from human texts (imprecisely formatted).
+Extract (parse) phones, email, etc. from human texts. Aims to supports an imprecisely formatted data,
+to the degree it's possible to support.
 
 ### Phone number recognition
 
 - International format (e.g `+49 30 xxxxxxxx`)
-- Preceded by certain words (e.g. `Phone: xxx`)
-- Have unicode prefixes (e.g. `📞 xxx`)
+- Preceded by trigger words (e.g. `Phone: xxx`, `Whatsapp: xxx`)
+- Preceded by unicode emojis (e.g. `📞 xxx`)
 - From URLs (e.g. `t.me/xxxxxxxx`)
 
 ## Existing Libraries
