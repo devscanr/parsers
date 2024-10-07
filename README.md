@@ -3,19 +3,26 @@
 Extract (parse) phones, email, etc. from human texts. Aims to supports an imprecisely formatted data,
 to the degree it's possible to support.
 
-### Phone number recognition
+Extracts:
+- Phone numbers (string)
+- Emails (string)
+- Whether someone is a student (boolean)
+
+## Phone Extractor
+
+### Recognizes
 
 - International format (e.g `+49 30 xxxxxxxx`)
 - Preceded by trigger words (e.g. `Phone: xxx`, `Whatsapp: xxx`)
 - Preceded by unicode emojis (e.g. `📞 xxx`)
 - From URLs (e.g. `t.me/xxxxxxxx`)
 
-## Existing Libraries
+### Rejected existing libraries
 
-Existing libraries: 
 - https://github.com/daviddrysdale/python-phonenumbers
+- and more
 
-### Inacceptable tradeoffs
+### Rejection notes
 
 #### Ambiguity
 
