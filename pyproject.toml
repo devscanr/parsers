@@ -10,7 +10,7 @@ ignore = ["E701", "E741"]
 [tool.poetry]
 package-mode = true
 name = "extractors"
-version = "0.3.0"
+version = "0.4.0"
 description = ""
 authors = ["DevScanr team <info@devscanr.com>"]
 readme = "README.md"
@@ -22,6 +22,9 @@ pytest-describe = "^2.2.0"
 html2text = "^2024.2.26"
 emoji = "^2.13.2"
 markdown = "^3.7"
+spacy = "^3.8.2"
+# lingua-language-detector = "^2.0.2"
+# jupyterlab = "^4.2.5"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.11.2"
