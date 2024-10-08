@@ -1,16 +1,23 @@
 import spacy
 from spacy.matcher import PhraseMatcher
-from spacy.tokens import Token
+from spacy.tokens import Doc, Token
+from typing import Iterable
 
-__all__ = ["is_freelancer"]
+__all__ = ["are_freelancers", "is_freelancer"]
 
 nlp = spacy.load("en_core_web_md", exclude=["ner"])
 matcher = PhraseMatcher(nlp.vocab)
 
 FREELANCER_NOUNS = {"freelancer", "freelance"}
 
-def is_freelancer(ntext: str) -> bool:
-  doc = nlp(ntext)
+def are_freelancers(ntexts: Iterable[str | Doc]) -> list[bool]:
+  docs = nlp.pipe(ntexts)
+  return [
+    is_freelancer(doc) for doc in docs
+  ]
+
+def is_freelancer(ntext: str | Doc) -> bool:
+  doc = ntext if type(ntext) is Doc else nlp(ntext)
   # for nc in doc.noun_chunks:
   #   print(nc)
   for token in doc:

@@ -1,4 +1,4 @@
-from extractors.student import is_student as _is_student
+from extractors.student import are_students, is_student as _is_student
 from extractors.utils import fix_grammar, normalize
 
 def is_student(text: str) -> bool:
@@ -6,11 +6,24 @@ def is_student(text: str) -> bool:
     fix_grammar(normalize(text))
   )
 
+def describe_are_students() -> None:
+  def it_basically_works() -> None:
+    texts = [
+      "I'm a student",
+      "I'm a developer",
+    ]
+    assert are_students(texts) == [
+      True,
+      False,
+    ]
+
 def describe_is_student() -> None:
   def it_basically_works() -> None:
     assert is_student("I'm a student")
-    assert is_student("Carl is a student")
+    assert is_student("Carl was a student")
+    assert is_student("Maria is an undergraduate")
     assert is_student("Phd student")
+    assert not is_student("Michael is a bachelor in MIT")
     assert not is_student("I'm a perpetual student")
     assert is_student("Chasing a perpetual motion. An applied mechanics student")
     assert is_student("My name is Josh Student")
@@ -18,7 +31,7 @@ def describe_is_student() -> None:
     # without a retrained Spacy model, that properly recognizes PROPN vs NOUN.
     assert not is_student("A friend of a student")
     assert not is_student("On a mission to help every student")
-    # assert not is_student("Being a life-long student is hard")
+    assert not is_student("Being a life-long student is hard")
 
   def it_handles_set1() -> None:
     assert not is_student("On a mission to help every student to reach their potential with technologies")

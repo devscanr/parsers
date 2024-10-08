@@ -1,4 +1,4 @@
-from extractors.freelancer import is_freelancer as _is_freelancer
+from extractors.freelancer import are_freelancers, is_freelancer as _is_freelancer
 from extractors.utils import fix_grammar, normalize
 
 def is_freelancer(text: str) -> bool:
@@ -6,11 +6,22 @@ def is_freelancer(text: str) -> bool:
     fix_grammar(normalize(text))
   )
 
+def describe_are_freelancers() -> None:
+  def it_basically_works() -> None:
+    texts = [
+      "I'm a freelancer",
+      "I'm a developer",
+    ]
+    assert are_freelancers(texts) == [
+      True,
+      False,
+    ]
+
 def describe_is_freelancer() -> None:
   def it_basically_works() -> None:
     assert is_freelancer("I'm a freelancer")
-    assert is_freelancer("I'm a free-lancer")
-    assert is_freelancer("I'm a free lancer")
+    assert is_freelancer("I was a free-lancer")
+    assert is_freelancer("I used to be a free lancer like you")
     assert not is_freelancer("I'm a student")
     assert not is_freelancer("I'm a developer")
 

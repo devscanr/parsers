@@ -1,11 +1,11 @@
+from extractors.match import words_to_regex
 import re
-from re import RegexFlag
 import spacy
 from spacy.matcher import PhraseMatcher
-from spacy.tokens import Token
-from extractors.match import words_to_regex
+from spacy.tokens import Doc, Token
+from typing import Iterable
 
-__all__ = ["is_student"]
+__all__ = ["are_students", "is_student"]
 
 nlp = spacy.load("en_core_web_md", exclude=["ner"])
 matcher = PhraseMatcher(nlp.vocab)
@@ -35,8 +35,14 @@ ASPIRING_REGEX = words_to_regex(ASPIRING_SYNONIMS)
 PERPETUAL_SYNONIMS = {"constant", "eternal", "everlasting", "life=long", "permanent", "perpetual"}
 PERPETUAL_REGEX = words_to_regex(PERPETUAL_SYNONIMS)
 
-def is_student(ntext: str) -> bool:
-  doc = nlp(ntext)
+def are_students(ntexts: Iterable[str | Doc]) -> list[bool]:
+  docs = nlp.pipe(ntexts)
+  return [
+    is_student(doc) for doc in docs
+  ]
+
+def is_student(ntext: str | Doc) -> bool:
+  doc = ntext if type(ntext) is Doc else nlp(ntext)
   # for nc in doc.noun_chunks:
   #   print(nc)
   for token in doc:
