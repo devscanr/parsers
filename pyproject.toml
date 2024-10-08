@@ -37,7 +37,7 @@ PYTHONPATH = "."
 
 [tool.poe.tasks]
 build = "poetry build --format=wheel"
-typecheck = "poetry run mypy --enable-incomplete-feature=NewGenericSyntax ."
+tc = "poetry run mypy --enable-incomplete-feature=NewGenericSyntax ."
 test = "poetry run pytest --disable-warnings"
 lint = "poetry run ruff check"
 

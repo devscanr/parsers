@@ -15,11 +15,11 @@ def describe_html2text() -> None:
       </div>
     """)
     text = c("""
-      First !
+      First 🧡
       
       --
       
-      Second !
+      Second 💚
     """)
     assert html2text(html) == dedent(text).strip()
 
@@ -33,11 +33,11 @@ def describe_markdown2text() -> None:
       Second 💚
     """)
     text = c("""
-      First !
+      First 🧡
       
       --
       
-      Second !
+      Second 💚
     """)
     assert markdown2text(md) == text
 

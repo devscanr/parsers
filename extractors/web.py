@@ -1,18 +1,18 @@
-from emoji import replace_emoji
 from html2text import HTML2Text
 from markdown import markdown
 import re
+
+__all__ = ["html2text", "markdown2text"]
 
 h = HTML2Text()
 h.mark_code = True
 
 def html2text(html: str) -> str:
   text = h.handle(html).strip()
-  clean_text = replace_emoji(text, "!")
   return re.sub(
     r"\[code].*\[/code]",
     "--",
-    clean_text,
+    text,
     flags=re.DOTALL  # | re.UNICODE | re.IGNORECASE | re.MULTILINE
   )
 
