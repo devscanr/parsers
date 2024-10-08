@@ -46,7 +46,7 @@ def is_student(ntext: str | Doc) -> bool:
   # for nc in doc.noun_chunks:
   #   print(nc)
   for token in doc:
-    print(token, token.pos_, token.dep_)
+    # print(token, token.pos_, token.dep_)
     # Assuming whatever role is found first, is more important and deciding
     if is_student_noun(token):
       subtree = "".join([token.lower_ + token.whitespace_ for token in token.subtree])
