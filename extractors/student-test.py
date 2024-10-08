@@ -6,8 +6,8 @@ def is_student(text: str) -> bool:
     fix_grammar(normalize(text))
   )
 
-def describe_are_students() -> None:
-  def it_basically_works() -> None:
+def describe_are_students():
+  def it_works():
     texts = [
       "I'm a student",
       "I'm a developer",
@@ -17,8 +17,8 @@ def describe_are_students() -> None:
       False,
     ]
 
-def describe_is_student() -> None:
-  def it_basically_works() -> None:
+def describe_is_student():
+  def it_basically_works():
     assert is_student("I'm a student")
     assert is_student("Carl was a student")
     assert is_student("Maria is an undergraduate")
@@ -33,28 +33,28 @@ def describe_is_student() -> None:
     assert not is_student("On a mission to help every student")
     assert not is_student("Being a life-long student is hard")
 
-  def it_handles_set1() -> None:
+  def it_handles_set1():
     assert not is_student("On a mission to help every student to reach their potential with technologies")
     assert not is_student("Software engineer and PhD student specializing in robotics")
     assert is_student("PhD student making open source learning tools.")
     assert not is_student("Lawyer. Lecturer. Researcher. Student")
     assert not is_student("Developer at Sky and undergraduated in C.S. in Federal University of South Frontier")
 
-  def it_handles_set2() -> None:
+  def it_handles_set2():
     assert not is_student("Gamer, life-long student and hacker of regexes.")
     assert is_student("Gamer, student, hacker of regexes.")
     assert is_student("Hello there, I am a passionate student who loves to learn and explore new things!")
     assert is_student("undergraduate student of Tongji university")
     assert is_student("Undergraduate at UC Berkeley, double major in CS and Math.")
 
-  def it_handles_set3() -> None:
+  def it_handles_set3():
     assert is_student("Undergraduate studying 'Software and Information Engineering' at the Vienna University of Technology")
     assert not is_student("Junior UI Designer @ Section BFA Design Art Undergraduate from NTU ADM, Singapore")
     assert not is_student("Associate Professor, Vice Dean for Undergraduate Studies")
     assert not is_student("associate dean of undergraduate education school of engineering and applied sciences")
     assert is_student("Graduate Diploma in IT graduate with an undergraduate degree in Bachelor of Laws")
 
-  def it_handles_set4() -> None:
+  def it_handles_set4():
     assert not is_student("""
       Professor of the Practice in Computer Science, Program Director
       for the Fundamentals of Computing Undergraduate Certificate Program
@@ -69,7 +69,7 @@ def describe_is_student() -> None:
     assert not is_student("Full-time software developer and student. Spare-time Japan fan and gamer")
     assert is_student("Student of Chinese medicine, dance teacher, rare soul & funk music digger")
 
-  def it_handles_set5() -> None:
+  def it_handles_set5():
     assert not is_student("I engineer 'learn by doing' experiences for uni students with lean, agile, & service design.")
     assert not is_student("""
       Software engineer at @GRID-is. Fellow of the Royal Geographical Society.
@@ -85,7 +85,7 @@ def describe_is_student() -> None:
     """)
     assert is_student("Dad | Runner | Aviation Student | Dog Lover | Builder of cool shit")
 
-  def it_handles_set6() -> None:
+  def it_handles_set6():
     assert not is_student("Engineering @ Rubrik. MemCachier Co-Founder. Formerly Stanford CS PhD Student.")
     assert is_student("Blockchain student. Crypto investor.")
     assert not is_student("""
@@ -99,7 +99,7 @@ def describe_is_student() -> None:
       Technology entrepreneur, sports lover, network security student.
     """)
 
-  def it_handles_set7() -> None:
+  def it_handles_set7():
     assert not is_student("""
       👨‍💻 developer of 🌐 coora-ai.com 🧭 igapo.xyz / tech enthusiast / applied artificial intelligence student
     """)
@@ -110,14 +110,14 @@ def describe_is_student() -> None:
     assert is_student("PhD student at MIT Brain and Cognitive Sciences")
     assert not is_student("VP Eng. at MedScout, storyteller, student of disasters.")
 
-  def it_handles_set8() -> None:
+  def it_handles_set8():
     assert is_student("Biotech student and sometimes software developer.")
     assert not is_student("Software developer and sometimes biotech student.")
     assert not is_student("Everlasting student · Rails Core · Zeitwerk · Freelance · Life lover")
     assert not is_student("Principal Engineer @github. Ruby/Go mostly. Perpetual student.")
     assert not is_student("Perpetual student. Principal Engineer @github. Ruby/Go mostly.")
 
-  def it_handles_set9() -> None:
+  def it_handles_set9():
     assert not is_student("""
       TOGAF 9 Certified Enterprise Architect, Pragmatist, Economic Student, Biker,
       Bass Fisherman (Angler), Coder (Angular), FX Trader, American Football fan.
@@ -137,7 +137,7 @@ def describe_is_student() -> None:
     assert is_student("B.Sc. in C.S. and M.Eng. student at the University of Bologna. I randomly bump into some code.")
     # Note: ^ should be false, add Bachelor as "Graduate" synonim
 
-  def it_handles_set10() -> None:
+  def it_handles_set10():
     assert not is_student("""
       I am Viktor Klang, a finder, researcher, problem solver, improver of things,
       life-long student, developer/programmer, leader, mentor/advisor, public speaker…
@@ -151,7 +151,7 @@ def describe_is_student() -> None:
     assert is_student("CS Bachelor student at USI")
     assert not is_student("CS Bachelor at USI")
 
-  def it_handles_set11() -> None:
+  def it_handles_set11():
     assert is_student("Bachelor student of Comp Sci @ Concordia University")
     assert not is_student("Bachelor of Comp Sci student @ Concordia University")
     # FN ^ Spacy can't interpret this mess
@@ -159,7 +159,7 @@ def describe_is_student() -> None:
     assert not is_student("Computer Engineer & MSc Student")
     assert is_student("MSCS Student")
 
-  def it_handles_set12() -> None:
+  def it_handles_set12():
     assert is_student("Bachelor student of Comp Sci @ Concordia University")
     assert not is_student("Bachelor of Comp Sci student @ Concordia University")
     # FN ^ Spacy can't interpret this mess

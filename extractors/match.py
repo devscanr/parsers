@@ -9,7 +9,7 @@ SEPS = ["", "-", " "]
 
 def to_variants(phrase: str) -> list[str]:
   if "=" in phrase:
-    [head, tail] = phrase.split("=", maxsplit=1)
+    [head, tail] = phrase.split("=", maxsplit = 1)
     tail_variants = to_variants(tail)
     return [
       head + x + variant for variant in tail_variants
@@ -30,7 +30,7 @@ def words_to_regex(words: list[str] | set[str]) -> Pattern[str]:
 
 # def to_patterns(phrase: str) -> list[list[dict[str, Any]]]:
 #   if "=" in phrase:
-#     [head, tail] = phrase.split("=", maxsplit=1)
+#     [head, tail] = phrase.split("=", maxsplit = 1)
 #     tail_patterns = to_patterns(tail)
 #     return [
 #       [{"LOWER": head}, {"LOWER": "-", "OP": "?"}] + pattern for pattern in tail_patterns

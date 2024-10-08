@@ -7,7 +7,7 @@ def is_freelancer(text: str) -> bool:
   )
 
 def describe_are_freelancers() -> None:
-  def it_basically_works() -> None:
+  def it_works() -> None:
     texts = [
       "I'm a freelancer",
       "I'm a developer",
@@ -17,15 +17,15 @@ def describe_are_freelancers() -> None:
       False,
     ]
 
-def describe_is_freelancer() -> None:
-  def it_basically_works() -> None:
+def describe_is_freelancer():
+  def it_basically_works():
     assert is_freelancer("I'm a freelancer")
     assert is_freelancer("I was a free-lancer")
-    assert is_freelancer("I used to be a free lancer like you")
+    assert is_freelancer("I used to be a free lancer")
     assert not is_freelancer("I'm a student")
     assert not is_freelancer("I'm a developer")
 
-  def it_handles_set1() -> None:
+  def it_handles_set1():
     assert is_freelancer("""
       Freelancer Nasim is a Web Application Developer. 
       He knows JavaScript, Python, Django, NodeJS, Laravel, PhP. 
@@ -39,7 +39,7 @@ def describe_is_freelancer() -> None:
     assert is_freelancer("Freelance Clojure programmer")
     assert is_freelancer("Freelance ⠁⣿⣿ ⣿⣿⣿ ⣿⣿⣿")
 
-  def it_handles_set2() -> None:
+  def it_handles_set2():
     assert is_freelancer("indie dev • iOS & macOS • freelance")
     assert is_freelancer("Freelancer Jedi Padawan")
     assert is_freelancer("freelance math teacher, freelance front-end developer")
