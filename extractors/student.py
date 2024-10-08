@@ -1,4 +1,5 @@
 import re
+from re import RegexFlag
 import spacy
 from spacy.matcher import PhraseMatcher
 from spacy.tokens import Token
@@ -7,26 +8,32 @@ from extractors.match import words_to_regex
 __all__ = ["is_student"]
 
 nlp = spacy.load("en_core_web_md", exclude=["ner"])
-# nlp.add_pipe("merge_noun_chunks")
 matcher = PhraseMatcher(nlp.vocab)
 
-NON_STUDENT_NOUNS = {
-  # intern -> does not mean a non-student
-  # pilot -> non-digital
-  "architect", "artist", "bachelor", "cto", "dean", "designer", "devops", "developer", "doctor",
-  "engineer", "engineering", "eng", "entrepreneur",
-  "founder", "generalist", "graduate", "guru", "lawyer", "lead", "leader", "magician", "mathematician",
-  "mlops", "ninja", "phd", "physicist", "professor", "researcher", "scientist", "specialist", "vp",
-
-  # A Master of Science abbreviated MS, M.S., MSc, M.Sc., SM, S.M., ScM or Sc.M. @_@
-  # ^ need to retokenize
-  # ^ need to compare as ORTH, not LOWER
+STUDENT_NOUNS = {
+  "freshman",  # first-course
+  "graduate",  # has a degree but often used as a shortening for "graduate student" which is someone who continues to learn
+  "sophomore", # second-course
+  "student",   # junior student (3rd), senior student (4th year), no universal term for 5th year
+  "undergraduate",
 }
-STUDENT_NOUNS = {"sophomore", "student", "undergraduate"}
+NON_STUDENT_NOUNS = {
+  # Non-included cases:
+  #   intern -- does not mean a non-student
+  #   pilot -- non-digital
+  # Conflicts:
+  #   MS - Mississippi State
+  #   BC - British Columbia Province
+  "B.S", "M.S", "Ph.D",
+  "analyst", "architect", "artist", "bachelor", "cto", "dean", "designer", "devops", "developer", "doctor",
+  "engineer", "engineering", "eng", "entrepreneur",
+  "founder", "generalist", "guru", "lawyer", "lead", "leader", "magician", "mathematician",
+  "mlops", "ninja", "physicist", "professor", "researcher", "scientist", "specialist", "vp",
+}
 ASPIRING_SYNONIMS = {"aspiring", "future", "wannabe"}
 ASPIRING_REGEX = words_to_regex(ASPIRING_SYNONIMS)
 PERPETUAL_SYNONIMS = {"constant", "eternal", "everlasting", "life=long", "permanent", "perpetual"}
-PERPETUAL_REGEX = words_to_regex({"constant", "eternal", "everlasting", "life=long", "permanent", "perpetual"})
+PERPETUAL_REGEX = words_to_regex(PERPETUAL_SYNONIMS)
 
 def is_student(ntext: str) -> bool:
   doc = nlp(ntext)
@@ -53,10 +60,11 @@ def is_student_noun(token: Token) -> bool:
     token.pos_ in {"NOUN", "PROPN", "ADJ"} and # spacy default models have PROPN false positives and ADJ mistakes
     # (token.dep_ not in ["dobj", "pobj", "nsubj", "amod", "compound"]) # , "appos", "npadvmod"
     (token.dep_ in {
-      "ROOT",  # Student
-      "conj",  # Freelancer and student
-      "attr",  # I am a student (need to check for "nsubj", ideally)
-      "appos", # Freelancer, student
+      "ROOT",    # Student
+      "conj",    # Freelancer and student
+      "attr",    # I am a student (need to check for "nsubj", ideally)
+      "appos",   # Freelancer, student
+      "compound" # Undergraduate engineer
     })
   )
 

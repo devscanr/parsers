@@ -1,8 +1,10 @@
 from extractors.student import is_student as _is_student
-from extractors.utils import normalize
+from extractors.utils import fix_grammar, normalize
 
 def is_student(text: str) -> bool:
-    return _is_student(normalize(text))
+  return _is_student(
+    fix_grammar(normalize(text))
+  )
 
 def describe_is_student() -> None:
   def it_basically_works() -> None:
@@ -37,7 +39,7 @@ def describe_is_student() -> None:
     assert not is_student("Junior UI Designer @ Section BFA Design Art Undergraduate from NTU ADM, Singapore")
     assert not is_student("Associate Professor, Vice Dean for Undergraduate Studies")
     assert not is_student("associate dean of undergraduate education school of engineering and applied sciences")
-    assert not is_student("Graduate Diploma in IT graduate with an undergraduate degree in Bachelor of Laws")
+    assert is_student("Graduate Diploma in IT graduate with an undergraduate degree in Bachelor of Laws")
 
   def it_handles_set4() -> None:
     assert not is_student("""
@@ -130,7 +132,7 @@ def describe_is_student() -> None:
     assert not is_student("""
       Specializing generalist. CS PhD, student of life. Lover of words and hyperbole. Remote.
     """)
-    assert not is_student("music student java elasticsearch ai subversion git vim node, fans of strings instrument")
+    assert is_student("music student java elasticsearch ai subversion git vim node, fans of strings instrument")
     # FN ^ Spacy can't interpret this mess properly
     assert not is_student("Back-End Developer | Information Systems bachelor")
     assert is_student("CS Bachelor student at USI")
@@ -144,3 +146,10 @@ def describe_is_student() -> None:
     assert not is_student("Computer Engineer & MSc Student")
     assert is_student("MSCS Student")
 
+  def it_handles_set12() -> None:
+    assert is_student("Bachelor student of Comp Sci @ Concordia University")
+    assert not is_student("Bachelor of Comp Sci student @ Concordia University")
+    # FN ^ Spacy can't interpret this mess
+    assert not is_student("Private Pilot | Bachelor of Science")
+    assert not is_student("Computer Engineer & MSc Student")
+    assert is_student("MSCS Student")
