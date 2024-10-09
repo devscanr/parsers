@@ -1,7 +1,7 @@
 from extractors.nondev import are_nondevs, is_nondev as _is_nondev
 from extractors.utils import fix_grammar, normalize
 
-def is_nondev(text: str) -> bool:
+def is_nondev(text: str) -> bool | None:
   return _is_nondev(
     fix_grammar(normalize(text))
   )
@@ -14,7 +14,7 @@ def describe_are_nondevs() -> None:
     ]
     assert are_nondevs(texts) == [
       True,
-      False,
+      None,
     ]
 
 # def describe_is_nondev():

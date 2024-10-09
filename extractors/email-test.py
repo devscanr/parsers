@@ -7,8 +7,8 @@ def parse(text: str) -> list[str]:
 # Emails and phone numbers are fake (generated). Potential clashes will existing contacts
 # of real people are coincidental and not intended.
 
-def describe_parse_emails():
-  def it_parses_set1():
+def describe_parse_emails() -> None:
+  def it_parses_set1() -> None:
     assert parse("email: bishal-hadka-1600@gg.com phone: 970-799-9291") == ["bishal-hadka-1600@gg.com"]
     assert parse("akashkash934@hotmail.ru") == ["akashkash934@hotmail.ru"]
     assert parse("Email, Phone, other contacts") == []

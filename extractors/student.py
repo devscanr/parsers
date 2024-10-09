@@ -17,6 +17,11 @@ STUDENT_NOUNS = {
   "student",   # junior student (3rd), senior student (4th year), no universal term for 5th year
   "undergraduate",
 }
+STUDENT_VERBS = {
+  # Do not add "learn" or "study" words naively – lots of false positives
+  "learning",
+  "studying",
+}
 NON_STUDENT_NOUNS = {
   # Non-included cases:
   #   intern -- does not mean a non-student
@@ -25,7 +30,7 @@ NON_STUDENT_NOUNS = {
   #   MS - Mississippi State
   #   BC - British Columbia Province
   "B.S", "M.S", "Ph.D",
-  "analyst", "architect", "artist", "bachelor", "cto", "dean", "designer", "devops", "developer", "doctor",
+  "analyst", "architect", "artist", "bachelor", "cto", "dean", "designer", "dev", "devops", "developer", "doctor",
   "engineer", "engineering", "eng", "entrepreneur",
   "founder", "generalist", "guru", "lawyer", "lead", "leader", "magician", "mathematician", "mechanic",
   "mlops", "musician", "ninja", "physicist", "professor", "researcher", "scientist", "specialist", "vp",
@@ -36,54 +41,74 @@ ASPIRING_REGEX = words_to_regex(ASPIRING_SYNONIMS)
 PERPETUAL_SYNONIMS = {"constant", "eternal", "everlasting", "life=long", "permanent", "perpetual"}
 PERPETUAL_REGEX = words_to_regex(PERPETUAL_SYNONIMS)
 
-def are_students(ntexts: Iterable[str | Doc]) -> list[bool]:
+def are_students(ntexts: Iterable[str | Doc]) -> list[bool | None]:
   docs = nlp.pipe(ntexts)
   return [
     is_student(doc) for doc in docs
   ]
 
-def is_student(ntext: str | Doc) -> bool:
+def is_student(ntext: str | Doc) -> bool | None:
   doc = ntext if type(ntext) is Doc else nlp(ntext)
   # for nc in doc.noun_chunks:
   #   print(nc)
   for token in doc:
+    # if not token.is_space and not token.is_punct:
     # print(token, token.pos_, token.dep_)
     # Assuming whatever role is found first, is more important and deciding
     if is_student_noun(token):
       subtree = "".join([token.lower_ + token.whitespace_ for token in token.subtree])
-      if re.search(PERPETUAL_REGEX, subtree) is not None:
-        continue
+      if re.search(PERPETUAL_REGEX, subtree) is None:
+        return True
+    elif is_student_verb(token):
       return True
     elif is_non_student_noun(token):
       subtree = "".join([token.lower_ + token.whitespace_ for token in token.subtree])
-      if re.search(ASPIRING_REGEX, subtree) is not None:
-        continue
-      return False
-  return False
+      if re.search(ASPIRING_REGEX, subtree) is None:
+        return False
+  return None
 
 def is_student_noun(token: Token) -> bool:
+  if token.lower_ not in STUDENT_NOUNS:
+    return False
   return (
-    token.lower_ in STUDENT_NOUNS and
     token.pos_ in {"NOUN", "PROPN", "ADJ"} and # spacy default models have PROPN false positives and ADJ mistakes
-    # (token.dep_ not in ["dobj", "pobj", "nsubj", "amod", "compound"]) # , "appos", "npadvmod"
-    (token.dep_ in {
+    # token.dep_ not in ["dobj", "pobj", "nsubj", "amod", "compound"]) # , "appos", "npadvmod"
+    token.dep_ in {
       "ROOT",     # Student
       "conj",     # Freelancer and student
       "attr",     # I am a student
       "appos",    # Freelancer, student
       "compound", # Undergraduate engineer
       "nmod"      # Appears in complex, badly formatted sentences
-    })
+    }
   )
 
 def is_non_student_noun(token: Token) -> bool:
+  if token.lower_ not in NON_STUDENT_NOUNS:
+    return False
   return (
-    token.lower_ in NON_STUDENT_NOUNS and
     token.pos_ in {"NOUN", "PROPN", "ADJ"} and # spacy default models have numerous _PROPN_ false positives and ADJ mistakes
-    (token.dep_ in {
+    token.dep_ in {
       "ROOT", "conj", "attr", "appos"
-    })
+    }
   )
+
+def is_student_verb(token: Token) -> bool:
+  if token.lower_ not in STUDENT_VERBS:
+    return False
+  # Special case if it's the first word (a relatively often case)
+  if not token.i:
+    return True
+  # ...
+  if token.pos_ == "VERB":
+    if token.dep_ == "ROOT":
+      # yes, unless preceded by certain adverbs
+      return not any(left.lemma_ in {"always", "frantically"} for left in token.lefts)
+    elif token.dep_ == "xcomp":
+      # no, unless parented by "started"
+      return token.head.lower_ == "started" if token.head else False
+    return True
+  return False
 
 # E.g.
 # "Lawyer. Lecturer. Researcher. Student." -> only the last noun gets properly marked as "NOUN"

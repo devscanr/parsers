@@ -20,9 +20,9 @@ def categorize(ntexts: Iterable[str | Doc]) -> list[Categorized]:
   docs = nlp.pipe(ntexts)
   return [
     Categorized(
-      is_freelancer=is_freelancer(doc),
-      is_nondev=is_nondev(doc),
-      is_student=is_student(doc),
+      is_freelancer=is_freelancer(doc) or False,
+      is_nondev=is_nondev(doc) or False,
+      is_student=is_student(doc) or False,
     ) for doc in docs
   ]
 

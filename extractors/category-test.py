@@ -4,8 +4,8 @@ from extractors.utils import fix_grammar, normalize
 def t(text: str) -> str:
   return fix_grammar(normalize(text))
 
-def describe_categorize():
-  def it_works():
+def describe_categorize() -> None:
+  def it_works() -> None:
     texts = [
       t("I'm a student and a freelancer"),
       t("I'm an engineer, a student, occasionally a musician"),

@@ -18,30 +18,30 @@ NONDEV_NOUNS = {
 # where the preceding nouns have priotity over subsequent.
 # --------------------------------------------------------------------------------------------------
 
-def are_nondevs(ntexts: Iterable[str | Doc]) -> list[bool]:
+def are_nondevs(ntexts: Iterable[str | Doc]) -> list[bool | None]:
   docs = nlp.pipe(ntexts)
   return [
     is_nondev(doc) for doc in docs
   ]
 
-def is_nondev(ntext: str | Doc) -> bool:
-  print("@ is_nondev")
+def is_nondev(ntext: str | Doc) -> bool | None:
   doc = ntext if type(ntext) is Doc else nlp(ntext)
   for token in doc:
-    print(token, token.pos_, token.dep_, token.head.lemma_)
+    # if not token.is_space and not token.is_punct:
+    # print(token, token.pos_, token.dep_, token.head.lemma_)
     if is_nondev_noun(token):
       return True
-  return False
+  return None
 
 def is_nondev_noun(token: Token) -> bool:
   return (
     token.lower_ in NONDEV_NOUNS and
     token.pos_ in {"NOUN", "PROPN", "ADJ"} and # spacy default models have PROPN false positives and ADJ mistakes
-    (token.dep_ in {
+    token.dep_ in {
       "ROOT",    # Manager
       "conj",    # Manager and student
       "attr",    # I am a manager
       "appos",   # Manager, student
       "compound" # Manager Nasim (Spacy mistakenly thinks the first word is PROPN)
-    })
+    }
   )
