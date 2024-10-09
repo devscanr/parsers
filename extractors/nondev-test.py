@@ -2,7 +2,7 @@ import spacy
 from extractors.nondev import NondevParser
 from extractors.utils import fix_grammar, normalize
 
-nlp = spacy.load("en_core_web_md", exclude=["ner"])
+nlp = spacy.load("en_core_web_lg", exclude=["ner"])
 nondev_parser = NondevParser(nlp)
 
 def are_nondevs(texts: list[str]) -> list[bool | None]:

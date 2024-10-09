@@ -9,6 +9,7 @@ def normalize(text: str) -> str:
   text = re.sub(r"\s*[•|]+\s*", ". ", text)
   text = re.sub(r"(📞|☎️|📱|☎)\s*:?\s*", "Phone: ", text, re.UNICODE)
   text = replace_emoji(text, "!")
+  text = re.sub(r"(?<=\w)$", ".", text)
   return text.strip()
 
 def uniq[T](arr: list[T] | Generator[str, Any, Any]) -> list[T]:
@@ -26,7 +27,7 @@ def uniq[T](arr: list[T] | Generator[str, Any, Any]) -> list[T]:
 
 GRAMMAR_FIXES: list[tuple[str, str, re.RegexFlag | int]] = [
   (r"under[-\s]+graduated?", r"undergraduate", re.IGNORECASE),
-  (r"free[-\s]+lance(r)?", r"freelance\1", re.IGNORECASE),
+  (r"free[-\s]+lanc([edring]*)", r"freelanc\1", re.IGNORECASE),
   (r"B\.?[sS]\.?[cC]?\.?|S[cC]?\.?[bB]\.?", r"B.S", 0), # B.S  = Bachelor of Science
   (r"M\.?[sS]\.?[cC]?\.?|S[cC]\.?[mM]\.?", r"M.S", 0),  # M.S  = Master of Science (not handling "SM" forms for now)
   (r"P\.?[hH]\.?[dD]?\.?", r"Ph.D", 0),                 # Ph.D = Doctor of Philosophy

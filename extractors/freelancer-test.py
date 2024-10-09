@@ -2,7 +2,7 @@ import spacy
 from extractors.freelancer import FreelancerParser
 from extractors.utils import fix_grammar, normalize
 
-nlp = spacy.load("en_core_web_md", exclude=["ner"])
+nlp = spacy.load("en_core_web_lg", exclude=["ner"])
 freelancer_parser = FreelancerParser(nlp)
 
 def are_freelancers(texts: list[str]) -> list[bool | None]:
@@ -55,3 +55,16 @@ def describe_FreelancerParser() -> None:
       assert is_freelancer("freelance math teacher, freelance front-end developer")
       assert not is_freelancer("I'm a Software Engineer, Ethical Hacker, and Cyber security enthusiast")
       assert not is_freelancer("⭐️ Senior Software Developer ⭐️ Blockchain / Backend / Frontend / ETL / RPA")
+
+    def it_handles_set3() -> None:
+      assert is_freelancer("Freelancer and video editor")
+      assert is_freelancer("Full stack developer, tech consultant, guitarist, windsurfer.")
+      assert is_freelancer("Backend SWE & consulting")
+      assert is_freelancer("Java Full-stack Developer at j-labs.pl Crif consultant")
+      assert is_freelancer("Front-end & WordPress developer, UX consultant. Making stuff for the web since 2005")
+
+  def it_handles_set4() -> None:
+      assert is_freelancer("Frontend Consultant; Web, Mobile and Desktop Applications Developer; Open-Source Software Maintainer; Team Lead; Mentor;")
+      assert is_freelancer("My name is Jorens, I'm a Full Stack developer, currently freelancing (but looking for a real job).")
+      assert is_freelancer("WebGL, WebXR, full-stack, consulting")
+      assert is_freelancer("Full-stack junior software developer, system administrator and IT consultant.")

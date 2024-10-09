@@ -53,8 +53,8 @@ class StudentParser:
     # for nc in doc.noun_chunks:
     #   print(nc)
     for token in doc:
-      # if not token.is_space and not token.is_punct:
-      # print(token, token.pos_, token.dep_)
+      if not token.is_space and not token.is_punct:
+        print(token, token.pos_, token.dep_)
       # Assuming whatever role is found first, is more important and deciding
       if is_student_noun(token):
         subtree = "".join([token.lower_ + token.whitespace_ for token in token.subtree])
@@ -71,7 +71,7 @@ class StudentParser:
 def is_student_noun(token: Token) -> bool:
   if token.lower_ not in STUDENT_NOUNS:
     return False
-  return (
+  if (
     token.pos_ in {"NOUN", "PROPN", "ADJ"} and # spacy default models have PROPN false positives and ADJ mistakes
     # token.dep_ not in ["dobj", "pobj", "nsubj", "amod", "compound"]) # , "appos", "npadvmod"
     token.dep_ in {
@@ -80,9 +80,16 @@ def is_student_noun(token: Token) -> bool:
       "attr",     # I am a student
       "appos",    # Freelancer, student
       "compound", # Undergraduate engineer
-      "nmod"      # Appears in complex, badly formatted sentences
+      "nmod",     # Appears in complex, badly formatted sentences
     }
-  )
+  ):
+    return True
+  if token.pos_ == "NOUN" and token.dep_ == "dobj":
+    # yes, unless certain DET prefixes
+    return not any(child for child in token.children if child.pos_ == "DET" and child.lower_ in {"any", "every", "some"})
+    # artifical intelligence student -> YES
+    # on a mission to help every student -> NO
+  return False
 
 def is_non_student_noun(token: Token) -> bool:
   if token.lower_ not in NON_STUDENT_NOUNS:

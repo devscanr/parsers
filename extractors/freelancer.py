@@ -5,7 +5,8 @@ from typing import Iterable
 
 __all__ = ["FreelancerParser"]
 
-FREELANCER_NOUNS = {"freelancer", "freelance"}
+FREELANCER_NOUNS = {"consulting", "consultant", "freelancer", "freelance", "freelancing"}
+FREELANCER_VERBS = {"consulting", "freelancing"}
 
 class FreelancerParser:
   def __init__(self, nlp: Language) -> None:
@@ -23,8 +24,10 @@ class FreelancerParser:
     #   print(nc)
     for token in doc:
       # if not token.is_space and not token.is_punct:
-      # print(token, token.pos_, token.dep_)
+      #   print(token, token.pos_, token.dep_)
       if is_freelancer_noun(token):
+        return True
+      elif is_freelancer_verb(token):
         return True
     return None
 
@@ -34,10 +37,28 @@ def is_freelancer_noun(token: Token) -> bool:
   return (
     token.pos_ in {"NOUN", "PROPN", "ADJ"} and # spacy default models have PROPN false positives and ADJ mistakes
     token.dep_ in {
-      "ROOT",    # Student
-      "conj",    # Freelancer and student
-      "attr",    # I am a student
-      "appos",   # Freelancer, student
-      "compound" # Freelancer Nasim (Spacy mistakenly thinks the first word is PROPN)
+      "ROOT",     # Student
+      "conj",     # Freelancer and student
+      "amod",     # freelance math teacher
+      "attr",     # I am a student
+      "appos",    # Freelancer, student
+      "compound", # Freelancer Nasim (Spacy mistakenly thinks the first word is PROPN)
+      "nmod",     # Freelancer and editor
+      "pobj",     # Appears in complex (ill-understood) sentences
     }
   )
+
+def is_freelancer_verb(token: Token) -> bool:
+  if token.lower_ not in FREELANCER_VERBS:
+    return False
+  # Special case if it's the first word (a relatively often case)
+  if not token.i:
+    return True
+  # ...
+  if token.pos_ == "VERB":
+    return True
+    # if token.dep_ == "ROOT":
+    #   return True
+    # elif token.dep_ == "acl":
+    #   return True
+  return False

@@ -17,7 +17,7 @@ class Categorized:
 
 class Categorizer:
   def __init__(self) -> None:
-    self.nlp = spacy.load("en_core_web_md", exclude=["ner"])
+    self.nlp = spacy.load("en_core_web_lg", exclude=["ner"])
     self.freelancer_parser = FreelancerParser(self.nlp)
     self.nondev_parser = NondevParser(self.nlp)
     self.student_parser = StudentParser(self.nlp)
