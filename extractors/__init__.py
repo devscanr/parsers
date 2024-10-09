@@ -2,19 +2,21 @@ from .category import Categorizer
 from .phone import parse_phones
 from .email import parse_emails
 from .freelancer import FreelancerParser
+from .language import detect_language_iso639
 from .nondev import NondevParser
 from .student import StudentParser
 from .web import html2text, markdown2text
 
 __all__ = [
-  # Parsers
+  # Phone/Email parsers
   "parse_phones",
   "parse_emails",
 
-  # Categorizer
-  "Categorizer",
+  # Human language parser
+  "detect_language_iso639",
 
-  # Predicates
+  # Categorizers
+  "Categorizer",
   "FreelancerParser",
   "NondevParser",
   "StudentParser",
