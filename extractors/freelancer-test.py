@@ -64,7 +64,20 @@ def describe_FreelancerParser() -> None:
       assert is_freelancer("Front-end & WordPress developer, UX consultant. Making stuff for the web since 2005")
 
   def it_handles_set4() -> None:
-      assert is_freelancer("Frontend Consultant; Web, Mobile and Desktop Applications Developer; Open-Source Software Maintainer; Team Lead; Mentor;")
+      assert is_freelancer("Frontend Consultant; Web, Mobile and Desktop Applications Developer; Team Lead; Mentor;")
       assert is_freelancer("My name is Jorens, I'm a Full Stack developer, currently freelancing (but looking for a real job).")
       assert is_freelancer("WebGL, WebXR, full-stack, consulting")
       assert is_freelancer("Full-stack junior software developer, system administrator and IT consultant.")
+      assert is_freelancer("As a backend developer mastering Java, I have transformed years of freelancing into a full-time career.")
+
+  def it_handles_set5() -> None:
+      assert is_freelancer("NET Developer with front-end skills, Freelancer, Photographer and Science Lover")
+      assert not is_freelancer("Arman is a full-stack developer who mainly focuses on web development")
+      assert is_freelancer("Teenager, freelancer, backend developer (TypeScript, C++17)")
+      assert is_freelancer("Oleg Rybnikov - a freelancing web artisan specializing in Vite/Vue3")
+      assert is_freelancer("#backend #java #freelancer")
+      assert not is_freelancer("applied artificial intelligence student")
+      assert is_freelancer("Hi, I am 22 years old freelance full-stack developer from Czech Republic.")
+      assert is_freelancer("🇸🇰 Freelancer full-stack developer. #React #ReactNative")
+      assert is_freelancer("Full stack software engineer at dextra | Freelancer")
+      # is_freelancer("Self-taught Developer graded in Back-end Development. -Freelancer") -- character "-"

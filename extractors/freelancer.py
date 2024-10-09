@@ -35,17 +35,17 @@ def is_freelancer_noun(token: Token) -> bool:
   if token.lower_ not in FREELANCER_NOUNS:
     return False
   return (
-    token.pos_ in {"NOUN", "PROPN", "ADJ"} and # spacy default models have PROPN false positives and ADJ mistakes
-    token.dep_ in {
-      "ROOT",     # Student
-      "conj",     # Freelancer and student
-      "amod",     # freelance math teacher
-      "attr",     # I am a student
-      "appos",    # Freelancer, student
-      "compound", # Freelancer Nasim (Spacy mistakenly thinks the first word is PROPN)
-      "nmod",     # Freelancer and editor
-      "pobj",     # Appears in complex (ill-understood) sentences
-    }
+    token.pos_ in {"NOUN", "PROPN", "ADJ"} # and # spacy default models have PROPN false positives and ADJ mistakes
+    # token.dep_ in {
+    #   "ROOT",     # Student
+    #   "conj",     # Freelancer and student
+    #   "amod",     # freelance math teacher
+    #   "attr",     # I am a student
+    #   "appos",    # Freelancer, student
+    #   "compound", # Freelancer Nasim (Spacy mistakenly thinks the first word is PROPN)
+    #   "nmod",     # Freelancer and editor
+    #   "pobj",     # Appears in complex (ill-understood) sentences
+    # }
   )
 
 def is_freelancer_verb(token: Token) -> bool:

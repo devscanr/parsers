@@ -12,6 +12,7 @@ STUDENT_NOUNS = {
   "graduate",  # has a degree but often used as a shortening for "graduate student" which is someone who continues to learn
   "sophomore", # second-course
   "student",   # junior student (3rd), senior student (4th year), no universal term for 5th year
+  "teenager",
   "undergraduate",
 }
 STUDENT_VERBS = {
@@ -19,15 +20,18 @@ STUDENT_VERBS = {
   "learning",
   "studying",
 }
-NON_STUDENT_NOUNS = {
+WEAK_NON_STUDENT_NOUNS = {
+  # Mean a Non-Student only if sentence contains no STUDENT_NOUNS (these words can precede it)
+  "B.S", "M.S", "Ph.D", "bachelor"
+}
+STRONG_NON_STUDENT_NOUNS = {
   # Non-included cases:
   #   intern -- does not mean a non-student
   #   pilot -- non-digital
   # Conflicts:
   #   MS - Mississippi State
   #   BC - British Columbia Province
-  "B.S", "M.S", "Ph.D",
-  "analyst", "architect", "artist", "bachelor", "cto", "dean", "designer", "dev", "devops", "developer", "doctor",
+  "analyst", "architect", "artist", "cto", "dean", "designer", "dev", "devops", "developer", "doctor",
   "engineer", "engineering", "eng", "entrepreneur",
   "founder", "generalist", "guru", "lawyer", "lead", "leader", "magician", "mathematician", "mechanic",
   "mlops", "musician", "ninja", "physicist", "professor", "researcher", "scientist", "specialist", "vp",
@@ -50,55 +54,63 @@ class StudentParser:
 
   def is_student(self, ntext: str | Doc) -> bool | None:
     doc = ntext if type(ntext) is Doc else self.nlp(ntext)
-    # for nc in doc.noun_chunks:
-    #   print(nc)
     for token in doc:
       if not token.is_space and not token.is_punct:
         print(token, token.pos_, token.dep_)
       # Assuming whatever role is found first, is more important and deciding
       if is_student_noun(token):
-        subtree = "".join([token.lower_ + token.whitespace_ for token in token.subtree])
+        subtree = get_subtree_text(token)
         if re.search(PERPETUAL_REGEX, subtree) is None:
           return True
       elif is_student_verb(token):
         return True
-      elif is_non_student_noun(token):
-        subtree = "".join([token.lower_ + token.whitespace_ for token in token.subtree])
+      elif is_strong_non_student_noun(token):
+        print(">>>", token)
+        subtree = get_subtree_text(token)
+        print("subtree:", subtree)
         if re.search(ASPIRING_REGEX, subtree) is None:
-          return False
+          return False # not canceled by ASPIRING
+      elif is_weak_non_student_noun(token):
+        subtree = get_subtree_text(token)
+        is_aspiring = re.search(ASPIRING_REGEX, subtree) is not None
+        is_student_ = any(t for t in token.sent if is_student_noun(t))
+        if not is_aspiring and not is_student_:
+          return False # not canceled by ASPIRING or following STUDENT_NOUN
     return None
 
 def is_student_noun(token: Token) -> bool:
   if token.lower_ not in STUDENT_NOUNS:
     return False
   if (
-    token.pos_ in {"NOUN", "PROPN", "ADJ"} and # spacy default models have PROPN false positives and ADJ mistakes
-    # token.dep_ not in ["dobj", "pobj", "nsubj", "amod", "compound"]) # , "appos", "npadvmod"
-    token.dep_ in {
-      "ROOT",     # Student
-      "conj",     # Freelancer and student
-      "attr",     # I am a student
-      "appos",    # Freelancer, student
-      "compound", # Undergraduate engineer
-      "nmod",     # Appears in complex, badly formatted sentences
-    }
+    token.pos_ in {"NOUN", "PROPN", "ADJ"} # and # spacy default models have PROPN false positives and ADJ mistakes
+    # token.dep_ not in {"dobj", "pobj"}
+    # token.dep_ in {
+    #   "ROOT",     # Student
+    #   "conj",     # Freelancer and student
+    #   "attr",     # I am a student
+    #   "appos",    # Freelancer, student
+    #   "compound", # Undergraduate engineer
+    #   "nmod",     # Appears in complex, badly formatted sentences
+    # }
   ):
     return True
-  if token.pos_ == "NOUN" and token.dep_ == "dobj":
-    # yes, unless certain DET prefixes
-    return not any(child for child in token.children if child.pos_ == "DET" and child.lower_ in {"any", "every", "some"})
-    # artifical intelligence student -> YES
-    # on a mission to help every student -> NO
+  # if token.pos_ == "NOUN" and token.dep_ == "dobj":
+  #   # yes, unless certain DET prefixes
+  #   return not any(child for child in token.children if child.pos_ == "DET" and child.lower_ in {"any", "every", "some"})
+  #   # applied artifical intelligence student -> YES -- just invalidly parsed
+  #   # on a mission to help every student -> NO
   return False
 
-def is_non_student_noun(token: Token) -> bool:
-  if token.lower_ not in NON_STUDENT_NOUNS:
-    return False
+def is_strong_non_student_noun(token: Token) -> bool:
   return (
-    token.pos_ in {"NOUN", "PROPN", "ADJ"} and # spacy default models have numerous _PROPN_ false positives and ADJ mistakes
-    token.dep_ in {
-      "ROOT", "conj", "attr", "appos"
-    }
+    token.lower_ in STRONG_NON_STUDENT_NOUNS and
+    token.pos_ in {"NOUN", "PROPN", "ADJ"}
+  )
+
+def is_weak_non_student_noun(token: Token) -> bool:
+  return (
+    token.lower_ in WEAK_NON_STUDENT_NOUNS and
+    token.pos_ in {"NOUN", "PROPN", "ADJ"}
   )
 
 def is_student_verb(token: Token) -> bool:
@@ -109,14 +121,26 @@ def is_student_verb(token: Token) -> bool:
     return True
   # ...
   if token.pos_ == "VERB":
-    if token.dep_ == "ROOT":
-      # yes, unless preceded by certain adverbs
-      return not any(left.lemma_ in {"always", "frantically"} for left in token.lefts)
-    elif token.dep_ == "xcomp":
-      # no, unless parented by "started"
-      return token.head.lower_ == "started" if token.head else False
-    return True
+    # if token.dep_ == "ROOT":
+    #   # yes, unless preceded by certain adverbs
+    left_lemmas = (
+      left.lemma_
+      for left in list(token.lefts) + list(get_root(token).lefts)
+    )
+    return not any(lemma in {"always", "frantically", "never"} for lemma in left_lemmas)
+    # elif token.dep_ == "xcomp":
+    #   # no, unless parented by "started"
+    #   return token.head.lower_ == "started" if token.head else False
+    # return True
   return False
+
+def get_root(token: Token) -> Token:
+  while token.dep_ != "ROOT":
+    token = token.head
+  return token
+
+def get_subtree_text(token: Token) -> str:
+  return "".join(t.lower_ + t.whitespace_ for t in token.subtree)
 
 # E.g.
 # "Lawyer. Lecturer. Researcher. Student." -> only the last noun gets properly marked as "NOUN"
