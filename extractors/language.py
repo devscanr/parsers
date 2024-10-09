@@ -16,8 +16,7 @@ detector = LanguageDetectorBuilder.from_languages(*[
 
 def detect_language_iso639(text: str) -> Literal["ENG"] | Literal["RUS"] | None:
   values = detector.compute_language_confidence_values(text)
-  print(values)
   for value in values:
     if value.value > 0.8:
-      return value.language.iso_code_639_3.name
+      return cast(Literal["ENG"] | Literal["RUS"], value.language.iso_code_639_3.name)
   return None
