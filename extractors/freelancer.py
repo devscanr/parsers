@@ -1,31 +1,32 @@
-import spacy
-from spacy.matcher import PhraseMatcher
+from spacy.language import Language
+# from spacy.matcher import PhraseMatcher
 from spacy.tokens import Doc, Token
 from typing import Iterable
 
-__all__ = ["are_freelancers", "is_freelancer"]
-
-nlp = spacy.load("en_core_web_md", exclude=["ner"])
-matcher = PhraseMatcher(nlp.vocab)
+__all__ = ["FreelancerParser"]
 
 FREELANCER_NOUNS = {"freelancer", "freelance"}
 
-def are_freelancers(ntexts: Iterable[str | Doc]) -> list[bool | None]:
-  docs = nlp.pipe(ntexts)
-  return [
-    is_freelancer(doc) for doc in docs
-  ]
+class FreelancerParser:
+  def __init__(self, nlp: Language) -> None:
+    self.nlp = nlp
 
-def is_freelancer(ntext: str | Doc) -> bool | None:
-  doc = ntext if type(ntext) is Doc else nlp(ntext)
-  # for nc in doc.noun_chunks:
-  #   print(nc)
-  for token in doc:
-    # if not token.is_space and not token.is_punct:
-    # print(token, token.pos_, token.dep_)
-    if is_freelancer_noun(token):
-      return True
-  return None
+  def are_freelancers(self, ntexts: Iterable[str | Doc]) -> list[bool | None]:
+    docs = self.nlp.pipe(ntexts)
+    return [
+      self.is_freelancer(doc) for doc in docs
+    ]
+
+  def is_freelancer(self, ntext: str | Doc) -> bool | None:
+    doc = ntext if type(ntext) is Doc else self.nlp(ntext)
+    # for nc in doc.noun_chunks:
+    #   print(nc)
+    for token in doc:
+      # if not token.is_space and not token.is_punct:
+      # print(token, token.pos_, token.dep_)
+      if is_freelancer_noun(token):
+        return True
+    return None
 
 def is_freelancer_noun(token: Token) -> bool:
   if token.lower_ not in FREELANCER_NOUNS:

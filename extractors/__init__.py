@@ -1,7 +1,9 @@
+from .category import Categorizer
 from .phone import parse_phones
 from .email import parse_emails
-from .freelancer import is_freelancer
-from .student import is_student
+from .freelancer import FreelancerParser
+from .nondev import NondevParser
+from .student import StudentParser
 from .web import html2text, markdown2text
 
 __all__ = [
@@ -9,9 +11,13 @@ __all__ = [
   "parse_phones",
   "parse_emails",
 
+  # Categorizer
+  "Categorizer",
+
   # Predicates
-  "is_freelancer",
-  "is_student",
+  "FreelancerParser",
+  "NondevParser",
+  "StudentParser",
 
   # Web Utils
   "html2text",

@@ -1,12 +1,13 @@
-import spacy
-from spacy.matcher import PhraseMatcher
+# import spacy
+from spacy.language import Language
+# from spacy.matcher import PhraseMatcher
 from spacy.tokens import Doc, Token
 from typing import Iterable
 
-__all__ = ["are_nondevs", "is_nondev"]
+__all__ = ["NondevParser"]
 
-nlp = spacy.load("en_core_web_md", exclude=["ner"])
-matcher = PhraseMatcher(nlp.vocab)
+# nlp = spacy.load("en_core_web_md", exclude=["ner"])
+# matcher = PhraseMatcher(nlp.vocab)
 
 NONDEV_NOUNS = {
   "artist", "dean", "founder", "manager", "mechanic", "musician", "cto", "technician", "vp",
@@ -18,20 +19,24 @@ NONDEV_NOUNS = {
 # where the preceding nouns have priotity over subsequent.
 # --------------------------------------------------------------------------------------------------
 
-def are_nondevs(ntexts: Iterable[str | Doc]) -> list[bool | None]:
-  docs = nlp.pipe(ntexts)
-  return [
-    is_nondev(doc) for doc in docs
-  ]
+class NondevParser:
+  def __init__(self, nlp: Language) -> None:
+    self.nlp = nlp
 
-def is_nondev(ntext: str | Doc) -> bool | None:
-  doc = ntext if type(ntext) is Doc else nlp(ntext)
-  for token in doc:
-    # if not token.is_space and not token.is_punct:
-    # print(token, token.pos_, token.dep_, token.head.lemma_)
-    if is_nondev_noun(token):
-      return True
-  return None
+  def are_nondevs(self, ntexts: Iterable[str | Doc]) -> list[bool | None]:
+    docs = self.nlp.pipe(ntexts)
+    return [
+      self.is_nondev(doc) for doc in docs
+    ]
+
+  def is_nondev(self, ntext: str | Doc) -> bool | None:
+    doc = ntext if type(ntext) is Doc else self.nlp(ntext)
+    for token in doc:
+      # if not token.is_space and not token.is_punct:
+      # print(token, token.pos_, token.dep_, token.head.lemma_)
+      if is_nondev_noun(token):
+        return True
+    return None
 
 def is_nondev_noun(token: Token) -> bool:
   return (

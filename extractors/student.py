@@ -1,14 +1,11 @@
 from extractors.match import words_to_regex
 import re
-import spacy
-from spacy.matcher import PhraseMatcher
+from spacy.language import Language
+# from spacy.matcher import PhraseMatcher
 from spacy.tokens import Doc, Token
 from typing import Iterable
 
-__all__ = ["are_students", "is_student"]
-
-nlp = spacy.load("en_core_web_md", exclude=["ner"])
-matcher = PhraseMatcher(nlp.vocab)
+__all__ = ["StudentParser"]
 
 STUDENT_NOUNS = {
   "freshman",  # first-course
@@ -41,31 +38,35 @@ ASPIRING_REGEX = words_to_regex(ASPIRING_SYNONIMS)
 PERPETUAL_SYNONIMS = {"constant", "eternal", "everlasting", "life=long", "permanent", "perpetual"}
 PERPETUAL_REGEX = words_to_regex(PERPETUAL_SYNONIMS)
 
-def are_students(ntexts: Iterable[str | Doc]) -> list[bool | None]:
-  docs = nlp.pipe(ntexts)
-  return [
-    is_student(doc) for doc in docs
-  ]
+class StudentParser:
+  def __init__(self, nlp: Language) -> None:
+    self.nlp = nlp
 
-def is_student(ntext: str | Doc) -> bool | None:
-  doc = ntext if type(ntext) is Doc else nlp(ntext)
-  # for nc in doc.noun_chunks:
-  #   print(nc)
-  for token in doc:
-    # if not token.is_space and not token.is_punct:
-    # print(token, token.pos_, token.dep_)
-    # Assuming whatever role is found first, is more important and deciding
-    if is_student_noun(token):
-      subtree = "".join([token.lower_ + token.whitespace_ for token in token.subtree])
-      if re.search(PERPETUAL_REGEX, subtree) is None:
+  def are_students(self, ntexts: Iterable[str | Doc]) -> list[bool | None]:
+    docs = self.nlp.pipe(ntexts)
+    return [
+      self.is_student(doc) for doc in docs
+    ]
+
+  def is_student(self, ntext: str | Doc) -> bool | None:
+    doc = ntext if type(ntext) is Doc else self.nlp(ntext)
+    # for nc in doc.noun_chunks:
+    #   print(nc)
+    for token in doc:
+      # if not token.is_space and not token.is_punct:
+      # print(token, token.pos_, token.dep_)
+      # Assuming whatever role is found first, is more important and deciding
+      if is_student_noun(token):
+        subtree = "".join([token.lower_ + token.whitespace_ for token in token.subtree])
+        if re.search(PERPETUAL_REGEX, subtree) is None:
+          return True
+      elif is_student_verb(token):
         return True
-    elif is_student_verb(token):
-      return True
-    elif is_non_student_noun(token):
-      subtree = "".join([token.lower_ + token.whitespace_ for token in token.subtree])
-      if re.search(ASPIRING_REGEX, subtree) is None:
-        return False
-  return None
+      elif is_non_student_noun(token):
+        subtree = "".join([token.lower_ + token.whitespace_ for token in token.subtree])
+        if re.search(ASPIRING_REGEX, subtree) is None:
+          return False
+    return None
 
 def is_student_noun(token: Token) -> bool:
   if token.lower_ not in STUDENT_NOUNS:
