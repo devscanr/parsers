@@ -2,7 +2,7 @@ import spacy
 from extractors.student import StudentParser
 from extractors.utils import fix_grammar, normalize
 
-nlp = spacy.load("en_core_web_lg", exclude=["ner"])
+nlp = spacy.load("en_core_web_lg", exclude=["lemmatizer", "ner"])
 student_parser = StudentParser(nlp)
 
 def are_students(texts: list[str]) -> list[bool | None]:

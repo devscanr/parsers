@@ -55,8 +55,8 @@ class StudentParser:
   def is_student(self, ntext: str | Doc) -> bool | None:
     doc = ntext if type(ntext) is Doc else self.nlp(ntext)
     for token in doc:
-      if not token.is_space and not token.is_punct:
-        print(token, token.pos_, token.dep_)
+      # if not token.is_space and not token.is_punct:
+      #   print(token, token.pos_, token.dep_)
       # Assuming whatever role is found first, is more important and deciding
       if is_student_noun(token):
         subtree = get_subtree_text(token)
@@ -65,9 +65,7 @@ class StudentParser:
       elif is_student_verb(token):
         return True
       elif is_strong_non_student_noun(token):
-        print(">>>", token)
         subtree = get_subtree_text(token)
-        print("subtree:", subtree)
         if re.search(ASPIRING_REGEX, subtree) is None:
           return False # not canceled by ASPIRING
       elif is_weak_non_student_noun(token):
@@ -123,11 +121,11 @@ def is_student_verb(token: Token) -> bool:
   if token.pos_ == "VERB":
     # if token.dep_ == "ROOT":
     #   # yes, unless preceded by certain adverbs
-    left_lemmas = (
-      left.lemma_
+    lefts = (
+      left.lower_
       for left in list(token.lefts) + list(get_root(token).lefts)
     )
-    return not any(lemma in {"always", "frantically", "never"} for lemma in left_lemmas)
+    return not any(left in {"always", "frantically", "never"} for left in lefts)
     # elif token.dep_ == "xcomp":
     #   # no, unless parented by "started"
     #   return token.head.lower_ == "started" if token.head else False

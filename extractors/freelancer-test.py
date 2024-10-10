@@ -2,7 +2,7 @@ import spacy
 from extractors.freelancer import FreelancerParser
 from extractors.utils import fix_grammar, normalize
 
-nlp = spacy.load("en_core_web_lg", exclude=["ner"])
+nlp = spacy.load("en_core_web_lg", exclude=["lemmatizer", "ner"])
 freelancer_parser = FreelancerParser(nlp)
 
 def are_freelancers(texts: list[str]) -> list[bool | None]:
