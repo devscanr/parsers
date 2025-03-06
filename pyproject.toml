@@ -1,6 +1,6 @@
 [project]
 name = "extractors"
-version = "0.55.0"
+version = "0.55.1"
 description = ""
 authors = [
   {name = "DevScanr Team", email = "info@devscanr.com"}
@@ -12,7 +12,7 @@ dependencies = [
   "spacy == 3.8.*",
   "lingua-language-detector == 2.0.*",
   "urlextract == 1.9.*",
-  "beautifulsoup4 == 4.12.*",
+  "beautifulsoup4 (>=4.13.3,<5.0.0)",
   "emoji == 2.14.*",
   "poetry == 2.1.*",
 ]
