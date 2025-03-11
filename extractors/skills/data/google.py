@@ -23,9 +23,9 @@ SKILLS: list[Skill] = [
   ]),
   Tech("Google-Firebase", ["google=firebase", "firebase"]),
   Tech("Google-CloudStorage", ["google-cloud=storage", "gcs"]),
-  Tech("Google-Pub/Sub", ["google-pub/sub"]),
+  Tech("Google-Pub/Sub", ["google-pub/sub", "google-pub=sub", "cloud pub/sub", "cloud-pub=sub"]),
   Tech("Google-Sheets", ["google=sheets"]),
-  Tech("Google-BigTable", ["google-bigtable"]), # fast flexible noSQL
+  Tech("Google-BigTable", ["google-bigtable", "bigtable"]), # fast flexible noSQL
   Tech("Google-Kubernetes", ["google-kubernetes-engine", "google=ke", "google=ks", "gke", "gks"]), # ~ Amazon-EKS
 
   # Drive
