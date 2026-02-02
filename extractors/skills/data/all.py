@@ -8,6 +8,7 @@ from .apple import SKILLS as APPLE_SKILLS
 from .cisco import SKILLS as CISCO_SKILLS
 from .google import SKILLS as GOOGLE_SKILLS
 from .hashicorp import SKILLS as HASHICORP_SKILLS
+from .meta import SKILLS as META_SKILLS
 from .microsoft import SKILLS as MICROSOFT_SKILLS
 from .yandex import SKILLS as YANDEX_SKILLS
 # ...
@@ -25,6 +26,7 @@ SKILLS: list[Skill] = [
   *CISCO_SKILLS,
   *GOOGLE_SKILLS,
   *HASHICORP_SKILLS,
+  *META_SKILLS,
   *MICROSOFT_SKILLS,
   *YANDEX_SKILLS,
   # ...
